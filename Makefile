@@ -10,7 +10,7 @@ COMPRESSION= xz
 .PHONY: build
 build: $(NAME).sqfs
 
-$(NAME).sqfs: $(NAME).elf
+$(NAME).sqfs: $(NAME).elf dictionary.txt
 	$(RIVEMU_EXEC) riv-mksqfs $^ $@ -comp $(COMPRESSION)
 
 $(NAME).elf: $(SOURCE_FILES)
