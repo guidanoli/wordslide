@@ -53,6 +53,7 @@ uint64_t next_frame_to_spawn_word = 0;
 uint64_t seconds_per_word = 3;
 uint64_t correct_letters = 0;
 uint64_t hearts = WS_MAX_HEARTS;
+uint64_t healing_words = 0;
 
 // game graphics variables
 int sprites_id;
@@ -207,14 +208,20 @@ void try_to_spawn_word(const char* new_word)
         {
             int64_t len = mystrlen(new_word);
             int64_t w = 5 * len;
+            bool is_healing = ((hearts + healing_words) < WS_MAX_HEARTS) && (riv_rand_float() < WS_HEALING_WORD_PROBABILITY);
 
             word_objects[i] = (struct word_object_t){
                     new_word,
                     riv->frame,
                     riv->target_fps * seconds_per_word,
                     riv_rand_int(WS_MARGIN + w / 2 + 1, WS_SCREEN_SIZE - WS_MARGIN - w / 2 - 2),
-                    (hearts < WS_MAX_HEARTS) ? (riv_rand_float() < WS_HEALING_WORD_PROBABILITY) : false,
+                    is_healing,
             };
+
+            if (is_healing)
+            {
+                ++healing_words;
+            }
 
             break;
         }
@@ -258,6 +265,16 @@ bool streq(const char* a, const char* b)
     }
 }
 
+void delete_word_object(struct word_object_t* word_obj)
+{
+    if (word_obj->is_healing)
+    {
+        --healing_words;
+    }
+
+    word_obj->word = NULL;
+}
+
 void handle_matches()
 {
     bool found_match = false;
@@ -277,7 +294,7 @@ void handle_matches()
                 ++hearts;
             }
 
-            word_obj->word = NULL;
+            delete_word_object(word_obj);
         }
     }
 
@@ -291,15 +308,23 @@ void handle_purges()
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
-        if (word_objects[i].word != NULL &&
-            riv->frame >= word_objects[i].creation_frame + word_objects[i].duration_in_frames)
-        {
-            if (hearts > 0)
-            {
-                --hearts;
-            }
+        struct word_object_t* word_obj = &word_objects[i];
+        const char* word = word_obj->word;
 
-            word_objects[i].word = NULL;
+        if (word != NULL)
+        {
+            uint32_t creation_frame = word_obj->creation_frame;
+            uint32_t duration_in_frames = word_obj->duration_in_frames;
+
+            if (riv->frame >= creation_frame + duration_in_frames)
+            {
+                if (hearts > 0)
+                {
+                    --hearts;
+                }
+
+                delete_word_object(word_obj);
+            }
         }
     }
 }
