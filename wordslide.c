@@ -2,18 +2,22 @@
 
 #include "dictionary.h"
 
+// macros
+#define FRACTION_OF_SECOND(a, b) ((a) * riv->target_fps / (b))
+
 // game graphics constants 
 #define WS_TARGET_FPS 60
 #define WS_SCREEN_SIZE 128
 #define WS_SCREEN_CENTER (WS_SCREEN_SIZE / 2)
-#define WS_KEYBOARD_MARGIN 4
-#define WS_TYPED_WORD_MARGIN 2
+#define WS_INPUT_BUFFER_MARGIN 4
+
+// game input constants
+#define WS_KEYBOARD_SPAM_DELAY FRACTION_OF_SECOND(1, 4)
+#define WS_KEYBOARD_SPAM_PERIOD FRACTION_OF_SECOND(1, 30)
+#define WS_INPUT_BUFFER_MAX_WORD_LENGTH 18
 
 // game logic constants
 #define WS_MAX_WORD_COUNT 16
-#define WS_MAX_WORD_LENGTH 16
-#define WS_KEYBOARD_NROWS 3
-#define WS_KEYBOARD_NCOLS 10
 
 enum game_state_t
 {
@@ -28,17 +32,10 @@ struct word_object_t
     uint32_t duration_in_frames;  // number of frames the word lives for
 };
 
-const char keyboard[WS_KEYBOARD_NROWS][WS_KEYBOARD_NCOLS] = {
-    {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
-    {'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '\0'},
-    {'Z', 'X', 'C', 'V', 'B', 'N', 'M', '\0', '\0', '\0'},
-};
-
 // game logic variables
 enum game_state_t game_state = WS_GAMESTATE_TITLESCREEN;
-riv_vec2i curr_key_pos = {4, 1}; // G
-char curr_typed_word[WS_MAX_WORD_LENGTH + 1] = {'\0'};
-uint8_t curr_typed_word_length = 0;
+char input_buffer[WS_INPUT_BUFFER_MAX_WORD_LENGTH + 1] = {'\0'};
+uint8_t input_buffer_length = 0;
 struct word_object_t word_objects[WS_MAX_WORD_COUNT] = {{.word = NULL}};
 uint64_t next_frame_to_spawn_word = 0;
 uint64_t seconds_per_word = 3;
@@ -48,43 +45,50 @@ uint64_t uint64_min(uint64_t a, uint64_t b) {
     return (a < b) ? a : b;
 }
 
-void setup() {
+void check()
+{
+    if (ws_dictionary_max_word_length > WS_INPUT_BUFFER_MAX_WORD_LENGTH)
+    {
+        riv_tprintf("The dictionary contains a word of length %d, which is longer than user input buffer length %d.\n"
+                    "Either remove such word from the dictionary or raise the buffer length accordingly.\n",
+                    ws_dictionary_max_word_length, WS_INPUT_BUFFER_MAX_WORD_LENGTH);
+
+        riv_panic((const char*)riv->temp_str_buf);
+    }
+}
+
+void setup()
+{
     riv->width = WS_SCREEN_SIZE;
     riv->height = WS_SCREEN_SIZE;
     riv->target_fps = WS_TARGET_FPS;
-    riv->tracked_keys[RIV_KEYCODE_UP] = true;
-    riv->tracked_keys[RIV_KEYCODE_DOWN] = true;
-    riv->tracked_keys[RIV_KEYCODE_LEFT] = true;
-    riv->tracked_keys[RIV_KEYCODE_RIGHT] = true;
-    riv->tracked_keys[RIV_KEYCODE_X] = true;
-    riv->tracked_keys[RIV_KEYCODE_Z] = true;
+
+    for (riv_key_code keycode = RIV_KEYCODE_A; keycode <= RIV_KEYCODE_Z; ++keycode)
+    {
+        riv->tracked_keys[keycode] = true;
+    }
+
+    riv->tracked_keys[RIV_KEYCODE_BACKSPACE] = true;
 }
 
-bool was_any_arrow_key_pressed(riv_vec2i* dir)
+bool is_key_triggered(riv_key_state keystate)
 {
-    if (riv->keys[RIV_KEYCODE_UP].press)
+    if (keystate.press)
     {
-        dir->x = 0;
-        dir->y = -1;
         return true;
     }
-    else if (riv->keys[RIV_KEYCODE_DOWN].press)
+    else if (keystate.down)
     {
-        dir->x = 0;
-        dir->y = 1;
-        return true;
-    }
-    else if (riv->keys[RIV_KEYCODE_LEFT].press)
-    {
-        dir->x = -1;
-        dir->y = 0;
-        return true;
-    }
-    else if (riv->keys[RIV_KEYCODE_RIGHT].press)
-    {
-        dir->x = 1;
-        dir->y = 0;
-        return true;
+        uint64_t frames_since_down = riv->frame - keystate.down_frame;
+
+        if (frames_since_down >= WS_KEYBOARD_SPAM_DELAY)
+        {
+            return (frames_since_down - WS_KEYBOARD_SPAM_DELAY) % WS_KEYBOARD_SPAM_PERIOD == 0;
+        }
+        else
+        {
+            return false;
+        }
     }
     else
     {
@@ -92,44 +96,37 @@ bool was_any_arrow_key_pressed(riv_vec2i* dir)
     }
 }
 
-char get_key_at(riv_vec2i pos)
+bool is_any_letter_key_pressed(char *ch)
 {
-    return keyboard[pos.y][pos.x];
-}
-
-riv_vec2i find_next_valid_key_pos_in_direction(riv_vec2i key_pos, riv_vec2i dir)
-{
-    do
+    for (riv_key_code keycode = RIV_KEYCODE_A; keycode <= RIV_KEYCODE_Z; ++keycode)
     {
-        key_pos.x = (key_pos.x + WS_KEYBOARD_NCOLS + dir.x) % WS_KEYBOARD_NCOLS;
-        key_pos.y = (key_pos.y + WS_KEYBOARD_NROWS + dir.y) % WS_KEYBOARD_NROWS;
+        if (is_key_triggered(riv->keys[keycode]))
+        {
+            *ch = (keycode - RIV_KEYCODE_A) + 'a';
+            return true;
+        }
     }
-    while (get_key_at(key_pos) == '\0');
 
-    return key_pos;
+    return false;
 }
 
 void handle_keypresses()
 {
-    riv_vec2i dir;
+    char ch;
 
-    if (was_any_arrow_key_pressed(&dir))
+    if (is_any_letter_key_pressed(&ch))
     {
-        curr_key_pos = find_next_valid_key_pos_in_direction(curr_key_pos, dir);
-    }
-    else if (riv->keys[RIV_KEYCODE_X].press)
-    {
-        if (curr_typed_word_length < WS_MAX_WORD_LENGTH)
+        if (input_buffer_length < WS_INPUT_BUFFER_MAX_WORD_LENGTH)
         {
-            curr_typed_word[curr_typed_word_length++] = get_key_at(curr_key_pos);
-            curr_typed_word[curr_typed_word_length] = '\0';
+            input_buffer[input_buffer_length++] = ch;
+            input_buffer[input_buffer_length] = '\0';
         }
     }
-    else if (riv->keys[RIV_KEYCODE_Z].press)
+    else if (is_key_triggered(riv->keys[RIV_KEYCODE_BACKSPACE]))
     {
-        if (curr_typed_word_length > 0)
+        if (input_buffer_length > 0)
         {
-            curr_typed_word[--curr_typed_word_length] = '\0';
+            input_buffer[--input_buffer_length] = '\0';
         }
     }
 }
@@ -141,7 +138,6 @@ void try_to_spawn_word(const char* new_word)
         if (word_objects[i].word == NULL)
         {
             word_objects[i] = (struct word_object_t){new_word, riv->frame, riv->target_fps * seconds_per_word};
-            riv_printf("word created: %s\n", word_objects[i].word);
             break;
         }
     }
@@ -149,7 +145,7 @@ void try_to_spawn_word(const char* new_word)
 
 const char* pick_random_word_from_dictionary()
 {
-    return ws_dictionary[riv_rand_uint(ws_dictionary_length - 1)];
+    return ws_dictionary[riv_rand_uint(ws_dictionary_word_count - 1)];
 }
 
 void handle_spawns()
@@ -168,7 +164,6 @@ void handle_purges()
         if (word_objects[i].word != NULL &&
             riv->frame >= word_objects[i].creation_frame + word_objects[i].duration_in_frames)
         {
-            riv_printf("word purged: %s\n", word_objects[i].word);
             word_objects[i].word = NULL;
             ++words_missed;
         }
@@ -221,54 +216,14 @@ void draw_title_screen()
             ((3 * riv->frame / riv->target_fps) % 4 != 3) ? RIV_COLOR_RED : RIV_COLOR_PINK); // fast blink
 }
 
-int64_t draw_keyboard()
-{
-    int64_t y = WS_SCREEN_SIZE - WS_KEYBOARD_MARGIN;
-
-    for (int i = WS_KEYBOARD_NROWS - 1; i >= 0; --i)
-    {
-        int64_t x = WS_KEYBOARD_MARGIN + 2 * i;
-        int64_t maxh = 0;
-
-        for (int j = 0; j < WS_KEYBOARD_NCOLS; ++j)
-        {
-            char key = keyboard[i][j];
-
-            if (key == '\0') break; // end of row
-
-            const char text[2] = {key, '\0'};
-
-            riv_recti rect = riv_draw_text(
-                    text,
-                    RIV_SPRITESHEET_FONT_5X7,
-                    RIV_BOTTOMLEFT,
-                    x,
-                    y,
-                    1,
-                    (curr_key_pos.x == j && curr_key_pos.y == i) ? RIV_COLOR_YELLOW : RIV_COLOR_WHITE);
-
-            x += rect.width + 2;
-
-            if (rect.height > maxh)
-            {
-                maxh = rect.height;
-            }
-        }
-
-        y -= maxh + 2;
-    }
-
-    return y;
-}
-
-int64_t draw_typed_word(uint64_t keyboard_min_y)
+int64_t draw_input_buffer()
 {
     riv_recti rect = riv_draw_text(
-            curr_typed_word,
+            input_buffer,
             RIV_SPRITESHEET_FONT_5X7,
             RIV_BOTTOMLEFT,
-            WS_KEYBOARD_MARGIN,
-            keyboard_min_y - WS_TYPED_WORD_MARGIN,
+            WS_INPUT_BUFFER_MARGIN,
+            WS_SCREEN_SIZE - WS_INPUT_BUFFER_MARGIN,
             1,
             RIV_COLOR_LIGHTBLUE);
 
@@ -284,16 +239,16 @@ int64_t draw_typed_word(uint64_t keyboard_min_y)
                 RIV_COLOR_LIGHTBLUE);
     }
 
-    return keyboard_min_y - 7 - 2 * WS_TYPED_WORD_MARGIN;
+    return WS_SCREEN_SIZE - WS_INPUT_BUFFER_MARGIN - 7 - WS_INPUT_BUFFER_MARGIN;
 }
 
-void draw_sliding_words(int64_t sliding_words_max_y)
+void draw_sliding_words(int64_t input_buffer_min_y)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
         if (word_objects[i].word != NULL)
         {
-            int64_t y = (sliding_words_max_y * (riv->frame - word_objects[i].creation_frame)) / (word_objects[i].duration_in_frames);
+            int64_t y = (input_buffer_min_y * (riv->frame - word_objects[i].creation_frame)) / (word_objects[i].duration_in_frames);
             riv_draw_text(
                     word_objects[i].word,
                     RIV_SPRITESHEET_FONT_5X7,
@@ -315,14 +270,14 @@ void draw()
     else if (game_state == WS_GAMESTATE_ONGOING)
     {
         riv_clear(RIV_COLOR_DARKSLATE);
-        int64_t keyboard_min_y = draw_keyboard();
-        int64_t sliding_words_max_y = draw_typed_word(keyboard_min_y);
+        int64_t sliding_words_max_y = draw_input_buffer();
         draw_sliding_words(sliding_words_max_y);
     }
 }
 
 int main()
 {
+    check();
     setup();
 
     do
