@@ -9,7 +9,8 @@
 #define WS_TARGET_FPS 60
 #define WS_SCREEN_SIZE 128
 #define WS_SCREEN_CENTER (WS_SCREEN_SIZE / 2)
-#define WS_INPUT_BUFFER_MARGIN 4
+#define WS_SPRITE_SIZE 16
+#define WS_MARGIN 4
 
 // game input constants
 #define WS_KEYBOARD_SPAM_DELAY FRACTION_OF_SECOND(1, 4)
@@ -18,11 +19,19 @@
 
 // game logic constants
 #define WS_MAX_WORD_COUNT 16
+#define WS_MAX_HEARTS 1
+#define WS_GAMEOVER_DELAY 3
+
+enum sprite_id
+{
+    WS_SPRITE_HEART = 0,
+};
 
 enum game_state_t
 {
     WS_GAMESTATE_TITLESCREEN,
     WS_GAMESTATE_ONGOING,
+    WS_GAMESTATE_END,
 };
 
 struct word_object_t
@@ -40,6 +49,10 @@ struct word_object_t word_objects[WS_MAX_WORD_COUNT] = {{.word = NULL}};
 uint64_t next_frame_to_spawn_word = 0;
 uint64_t seconds_per_word = 3;
 uint64_t correct_letters = 0;
+uint64_t hearts = WS_MAX_HEARTS;
+
+// game graphics variables
+int sprites_id;
 
 uint64_t uint64_min(uint64_t a, uint64_t b)
 {
@@ -73,6 +86,8 @@ void setup()
 
     riv->tracked_keys[RIV_KEYCODE_LEFT_CTRL] = true;
     riv->tracked_keys[RIV_KEYCODE_RIGHT_CTRL] = true;
+
+    sprites_id = riv_make_spritesheet(riv_make_image("sprites.png", 255), WS_SPRITE_SIZE, WS_SPRITE_SIZE);
 }
 
 bool is_key_triggered(riv_key_state keystate)
@@ -245,8 +260,27 @@ void handle_purges()
         if (word_objects[i].word != NULL &&
             riv->frame >= word_objects[i].creation_frame + word_objects[i].duration_in_frames)
         {
+            if (hearts > 0)
+            {
+                --hearts;
+            }
+
             word_objects[i].word = NULL;
         }
+    }
+}
+
+void end_game()
+{
+    game_state = WS_GAMESTATE_END;
+    riv->stop_frame = riv->frame + WS_GAMEOVER_DELAY * riv->target_fps;
+}
+
+void check_hearts()
+{
+    if (hearts == 0)
+    {
+        end_game();
     }
 }
 
@@ -265,6 +299,7 @@ void update()
         handle_spawns();
         handle_matches();
         handle_purges();
+        check_hearts();
     }
 }
 
@@ -303,8 +338,8 @@ int64_t draw_input_buffer()
             input_buffer,
             RIV_SPRITESHEET_FONT_5X7,
             RIV_BOTTOMLEFT,
-            WS_INPUT_BUFFER_MARGIN,
-            WS_SCREEN_SIZE - WS_INPUT_BUFFER_MARGIN,
+            WS_MARGIN,
+            WS_SCREEN_SIZE - WS_MARGIN,
             1,
             RIV_COLOR_LIGHTBLUE);
 
@@ -320,7 +355,7 @@ int64_t draw_input_buffer()
                 RIV_COLOR_LIGHTBLUE);
     }
 
-    return WS_SCREEN_SIZE - WS_INPUT_BUFFER_MARGIN - 7 - WS_INPUT_BUFFER_MARGIN;
+    return WS_SCREEN_SIZE - WS_MARGIN - 7 - WS_MARGIN;
 }
 
 void draw_sliding_words(int64_t input_buffer_min_y)
@@ -342,17 +377,56 @@ void draw_sliding_words(int64_t input_buffer_min_y)
     }
 }
 
+void draw_heart()
+{
+    riv_draw_sprite(
+            WS_SPRITE_HEART,
+            sprites_id,
+            WS_SCREEN_SIZE - WS_SPRITE_SIZE - WS_MARGIN,
+            WS_MARGIN,
+            1, 1, 1, 1);
+
+    riv_tprintf("%d", hearts);
+
+    riv_draw_text(
+            (const char*)riv->temp_str_buf,
+            RIV_SPRITESHEET_FONT_3X5,
+            RIV_CENTER,
+            WS_SCREEN_SIZE - WS_SPRITE_SIZE / 2 - WS_MARGIN,
+            WS_MARGIN + WS_SPRITE_SIZE / 2,
+            1,
+            RIV_COLOR_DARKRED);
+}
+
+void draw_game_over()
+{
+    riv_draw_text(
+            "GAME OVER",
+            RIV_SPRITESHEET_FONT_5X7,
+            RIV_CENTER,
+            WS_SCREEN_CENTER,
+            WS_SCREEN_CENTER,
+            2,
+            RIV_COLOR_RED);
+}
+
 void draw()
 {
     if (game_state == WS_GAMESTATE_TITLESCREEN)
     {
         draw_title_screen();
     }
-    else if (game_state == WS_GAMESTATE_ONGOING)
+    else if (game_state == WS_GAMESTATE_ONGOING || game_state == WS_GAMESTATE_END)
     {
         riv_clear(RIV_COLOR_DARKSLATE);
         int64_t sliding_words_max_y = draw_input_buffer();
         draw_sliding_words(sliding_words_max_y);
+        draw_heart();
+
+        if (game_state == WS_GAMESTATE_END)
+        {
+            draw_game_over();
+        }
     }
 }
 
