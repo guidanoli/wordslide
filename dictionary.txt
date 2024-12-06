@@ -27,6 +27,7 @@ accommodation
 accommodations
 accompany
 accord
+according to
 account
 accountant
 accuracy
@@ -88,6 +89,7 @@ afford
 afraid
 after
 afternoon
+afterward/afterwards
 again
 against
 age
@@ -103,13 +105,17 @@ agricultural
 agriculture
 ahead
 aid
-aids
+AIDS
 aim
 air
+air conditioning
 aircraft
+air force
 airline
+airplane/aeroplane
 airport
 alarm
+alarm clock
 album
 alcohol
 alcoholic
@@ -122,6 +128,7 @@ alleged
 allied
 allow
 allowance
+all right
 ally
 almost
 alone
@@ -137,6 +144,7 @@ alternative
 although
 altogether
 always
+a.m.
 amaze
 amazed
 amazing
@@ -153,6 +161,7 @@ amusement
 an
 analysis
 analyst
+analyze/analyse
 ancestor
 ancient
 and
@@ -185,6 +194,7 @@ anyway
 anywhere
 apart
 apartment
+apartment building
 apologize
 apology
 apostrophe
@@ -206,7 +216,7 @@ approval
 approve
 approximate
 approximately
-april
+April
 apt
 architecture
 area
@@ -277,7 +287,7 @@ attract
 attraction
 attractive
 audience
-august
+August
 aunt
 author
 authority
@@ -311,6 +321,7 @@ bacteria
 bad
 badge
 badly
+bad-tempered
 bag
 baggage
 bail
@@ -377,6 +388,7 @@ begin
 beginning
 behalf
 behave
+behavior/behaviour
 behind
 being
 belief
@@ -427,6 +439,7 @@ bleed
 blend
 blind
 block
+blond/blonde
 blood
 blouse
 blow
@@ -507,6 +520,7 @@ builder
 building
 bull
 bullet
+bulletin board
 bump
 bun
 bunch
@@ -565,6 +579,7 @@ captain
 capture
 car
 carbon
+carbon dioxide
 card
 cardboard
 care
@@ -584,6 +599,7 @@ cast
 castle
 casual
 cat
+catalog/catalogue
 catch
 category
 catering
@@ -592,7 +608,9 @@ cattle
 cause
 cautious
 cave
-cd
+CD
+CD player
+CD-ROM
 cease
 ceasefire
 ceiling
@@ -601,8 +619,10 @@ celebration
 celebrity
 cell
 cellar
+cell phone
 cemetery
 cent
+center/centre
 central
 century
 cereal
@@ -633,8 +653,10 @@ charming
 chart
 chase
 chat
+chat show
 cheap
 cheat
+check/cheque
 cheek
 cheer
 cheerful
@@ -662,8 +684,8 @@ choir
 choke
 choose
 chop
-christian
-christmas
+Christian
+Christmas
 church
 cigarette
 cinema
@@ -721,6 +743,7 @@ coat
 coconut
 code
 coffee
+coffee shop
 coin
 coincidence
 cold
@@ -733,6 +756,7 @@ collective
 college
 colon
 colonel
+color/colour
 coloured
 colourful
 column
@@ -759,6 +783,7 @@ commit
 committee
 common
 commonly
+common sense
 communicate
 communication
 communicative
@@ -934,6 +959,7 @@ create
 creative
 creature
 credit
+credit card
 crew
 cricket
 crime
@@ -980,7 +1006,7 @@ custom
 customer
 customs
 cut
-cv
+CV
 cycle
 cyclist
 dad
@@ -1018,7 +1044,7 @@ debut
 decade
 decay
 deceive
-december
+December
 decent
 decide
 decision
@@ -1038,6 +1064,7 @@ defect
 defend
 defendant
 defender
+defense/defence
 deficit
 define
 definite
@@ -1070,6 +1097,7 @@ dentist
 deny
 depart
 department
+department store
 departure
 depend
 dependent
@@ -1129,6 +1157,7 @@ dig
 digital
 dilemma
 dimension
+dining room
 dinner
 dinosaur
 dip
@@ -1195,7 +1224,7 @@ dividend
 division
 divorce
 divorced
-dna
+DNA
 do
 doctor
 doctrine
@@ -1220,7 +1249,9 @@ doubtful
 down
 downstairs
 downtown
+downward/downwards
 dozen
+draft/draught
 drag
 drain
 drama
@@ -1254,10 +1285,11 @@ dust
 dustbin
 dusty
 duty
-dvd
+DVD
 dying
 dynamic
 each
+each other
 eager
 eagle
 ear
@@ -1319,12 +1351,14 @@ electronics
 elegant
 element
 elementary
+elementary school
 elephant
 elevator
 eleven
 eliminate
 else
 elsewhere
+email/e-mail
 embarrass
 embarrassed
 embarrassing
@@ -1405,6 +1439,7 @@ establish
 establishment
 estate
 estimate
+etc.
 ethnic
 euro
 evaluate
@@ -1438,6 +1473,7 @@ exception
 exceptional
 excess
 exchange
+exchange rate
 excite
 excited
 excitement
@@ -1535,18 +1571,22 @@ fashion
 fashionable
 fast
 fasten
+fast food
 fat
 fatal
 fate
 father
 faucet
 fault
+favor/favour
+favorite/favourite
 favourable
 fear
 feather
 feature
-february
+February
 federal
+fed up
 fee
 feed
 feedback
@@ -1587,11 +1627,13 @@ finger
 finish
 finished
 fire
+fire brigade
 firework
 firm
 firmly
 first
 firstly
+first name
 fiscal
 fish
 fisherman
@@ -1606,6 +1648,7 @@ flame
 flash
 flashlight
 flat
+flavor/flavour
 flee
 fleet
 flesh
@@ -1680,7 +1723,7 @@ frequent
 frequently
 fresh
 freshly
-friday
+Friday
 fridge
 fried
 friend
@@ -1700,6 +1743,8 @@ fry
 fuel
 fulfil
 full
+full stop
+full-time
 fully
 fun
 function
@@ -1732,6 +1777,7 @@ gardener
 garlic
 gas
 gasoline
+gas station
 gate
 gather
 gay
@@ -1766,22 +1812,29 @@ glance
 glass
 glasses
 global
+global warming
 glory
 glove
 glow
 glue
-gm
+GM
 go
 goal
 goalkeeper
 goat
 god
-god
+God
 gold
 golden
+gold medal
 golf
 good
+good afternoon
 goodbye
+good evening
+good-looking
+good morning
+good night
 goods
 gorgeous
 govern
@@ -1811,6 +1864,7 @@ grass
 grateful
 grave
 gravity
+gray/grey
 great
 greatly
 green
@@ -1828,6 +1882,7 @@ group
 grow
 growing
 growl
+grown-up
 growth
 guarantee
 guard
@@ -1866,9 +1921,11 @@ happen
 happily
 happiness
 happy
+harbor/harbour
 hard
 hardly
 hardware
+hard-working
 harm
 harmful
 harmless
@@ -1891,6 +1948,7 @@ healthy
 hear
 hearing
 heart
+heart attack
 heat
 heater
 heating
@@ -1921,6 +1979,7 @@ hide
 high
 highlight
 highly
+high school
 highway
 hill
 him
@@ -1933,7 +1992,7 @@ historic
 historical
 history
 hit
-hiv
+HIV
 hobby
 hockey
 hold
@@ -1949,6 +2008,7 @@ honest
 honestly
 honesty
 honey
+honor/honour
 hook
 hope
 hopeful
@@ -1963,6 +2023,7 @@ hospital
 host
 hostage
 hot
+hot dog
 hotel
 hour
 house
@@ -1975,7 +2036,9 @@ however
 hug
 huge
 human
+human rights
 humid
+humor/humour
 humorous
 hundred
 hundredth
@@ -1989,10 +2052,11 @@ hurt
 husband
 hut
 hyphen
-i
+I
 ice
+ice cream
 icy
-id
+ID
 idea
 ideal
 ideally
@@ -2085,9 +2149,11 @@ inner
 innocent
 input
 inquire
+inquiry/enquiry
 insect
 insert
 inside
+inside out
 insist
 inspect
 inspector
@@ -2122,7 +2188,7 @@ interior
 intermediate
 internal
 international
-internet
+Internet
 interpret
 interpretation
 interrupt
@@ -2159,7 +2225,7 @@ island
 isolated
 issue
 it
-it
+IT
 itch
 item
 its
@@ -2173,9 +2239,10 @@ jazz
 jealous
 jeans
 jet
-jew
+Jew
 jewel
-jewish
+jewelry/jewellery
+Jewish
 job
 jogging
 join
@@ -2191,10 +2258,10 @@ judgment
 jug
 juice
 juicy
-july
+July
 jump
 jumper
-june
+June
 junior
 jury
 just
@@ -2211,6 +2278,7 @@ kill
 killer
 killing
 kilogram
+kilometer/kilometre
 kind
 kindly
 kindness
@@ -2233,6 +2301,7 @@ knowledge
 known
 lab
 label
+labor/labour
 laboratory
 lack
 lacking
@@ -2254,6 +2323,8 @@ largely
 laser
 last
 lastly
+last-minute
+last name
 late
 lately
 later
@@ -2286,6 +2357,7 @@ leave
 lecture
 lecturer
 left
+left-hand
 leg
 legal
 legally
@@ -2298,12 +2370,14 @@ length
 less
 lesson
 let
+let's
 letter
 lettuce
 level
 liberal
 liberty
 library
+license/licence
 lid
 lie
 life
@@ -2324,6 +2398,7 @@ lip
 liquid
 list
 listen
+liter/litre
 literally
 literary
 literature
@@ -2333,6 +2408,7 @@ live
 lively
 liver
 living
+living room
 load
 loaf
 loan
@@ -2346,6 +2422,8 @@ logical
 logo
 lonely
 long
+long-distance
+long-term
 look
 loose
 loosely
@@ -2406,7 +2484,7 @@ many
 map
 marathon
 march
-march
+March
 margin
 marine
 mark
@@ -2416,6 +2494,7 @@ marketing
 marriage
 married
 marry
+martial art
 mask
 mass
 massive
@@ -2430,7 +2509,7 @@ mathematics
 matter
 maximum
 may
-may
+May
 maybe
 mayor
 me
@@ -2472,10 +2551,13 @@ mess
 message
 messy
 metal
+meter/metre
 method
 microphone
 midday
 middle
+middle-aged
+middle class
 midnight
 might
 mild
@@ -2483,6 +2565,7 @@ mile
 military
 milk
 mill
+millimeter/millimetre
 million
 millionth
 mind
@@ -2501,7 +2584,7 @@ mirror
 misery
 misleading
 miss
-miss
+Miss
 missing
 mission
 mist
@@ -2510,14 +2593,17 @@ misunderstanding
 mix
 mixed
 mixture
+mm:
 mobile
+mobile phone
 mode
 model
 moderate
 modern
 modest
+mom/mum
 moment
-monday
+Monday
 monetary
 money
 monitor
@@ -2540,6 +2626,7 @@ mosquito
 most
 mostly
 mother
+mother tongue
 motion
 motivate
 motivation
@@ -2556,8 +2643,12 @@ mouth
 move
 movement
 movie
+movie theater
 moving
-mp
+MP
+Mr/Mr.
+Mrs/Mrs.
+Ms/Ms.
 much
 mud
 mug
@@ -2571,7 +2662,7 @@ mushroom
 music
 musical
 musician
-muslim
+Muslim
 must
 mutter
 mutual
@@ -2591,6 +2682,7 @@ nationalist
 nationality
 nationwide
 native
+native speaker
 natural
 naturally
 nature
@@ -2608,6 +2700,8 @@ necklace
 need
 needle
 negative
+neighbor/neighbour
+neighborhood/neighbourhood
 neither
 nephew
 nerve
@@ -2644,10 +2738,12 @@ noisy
 none
 nonsense
 noon
+no one
 nor
 normal
 normally
 north
+northeast/north-east
 northern
 northwest
 nose
@@ -2661,7 +2757,7 @@ notion
 noun
 novel
 novelist
-november
+November
 now
 nowadays
 nowhere
@@ -2692,12 +2788,14 @@ occupation
 occupy
 occur
 ocean
-october
+o'clock
+October
 odd
 of
 off
 offend
 offender
+offense/offence
 offensive
 offer
 office
@@ -2707,12 +2805,14 @@ officially
 often
 oh
 oil
-ok
+OK
 old
+old-fashioned
 olive
 on
 once
 one
+one another
 onion
 online
 only
@@ -2814,6 +2914,7 @@ parcel
 parent
 park
 parking
+parking lot
 parliament
 parliamentary
 parrot
@@ -2826,6 +2927,7 @@ particularly
 partly
 partner
 partnership
+part-time
 party
 pass
 passage
@@ -2847,7 +2949,7 @@ pause
 paw
 pay
 payment
-pc
+PC
 pea
 peace
 peaceful
@@ -2868,6 +2970,7 @@ pension
 people
 pepper
 per
+percent/per cent
 percentage
 perfect
 perfectly
@@ -2952,17 +3055,21 @@ plumber
 plunge
 plural
 plus
+p.m.
 pocket
 poem
 poet
 poetry
 point
 pointed
+point of view
 poison
 poisonous
 pole
 police
 policeman
+police officer
+police station
 policewoman
 policy
 polish
@@ -2998,6 +3105,7 @@ post
 postcard
 poster
 postman
+post office
 postpone
 pot
 potato
@@ -3012,6 +3120,7 @@ power
 powerful
 practical
 practically
+practice/practise
 praise
 prawn
 pray
@@ -3060,6 +3169,7 @@ pride
 priest
 primarily
 primary
+prime minister
 prince
 princess
 principal
@@ -3093,6 +3203,7 @@ professor
 profile
 profit
 profitable
+program/programme
 programming
 progress
 progressive
@@ -3138,6 +3249,7 @@ public
 publication
 publicity
 publicly
+public transport
 publish
 publisher
 publishing
@@ -3170,6 +3282,7 @@ quarter
 queen
 query
 question
+question mark
 questionnaire
 queue
 quick
@@ -3312,6 +3425,7 @@ remedy
 remember
 remind
 remote
+remote control
 removal
 remove
 renew
@@ -3434,6 +3548,7 @@ ruin
 rule
 ruler
 ruling
+rumor/rumour
 run
 runner
 running
@@ -3470,7 +3585,7 @@ satisfactory
 satisfied
 satisfy
 satisfying
-saturday
+Saturday
 sauce
 saucepan
 saucer
@@ -3512,6 +3627,7 @@ seasonal
 seat
 second
 secondary
+second-hand
 secondly
 secret
 secretary
@@ -3548,7 +3664,7 @@ sentence
 separate
 separately
 separation
-september
+September
 series
 serious
 seriously
@@ -3612,6 +3728,7 @@ short
 shortage
 shortly
 shorts
+short-term
 shot
 should
 shoulder
@@ -3655,6 +3772,7 @@ sir
 sister
 sit
 site
+sitting room
 situated
 situation
 six
@@ -3668,6 +3786,7 @@ ski
 skilful
 skill
 skilled
+skillful/skilful
 skin
 skip
 skirt
@@ -3704,12 +3823,14 @@ so
 soak
 soap
 sob
+so-called
 soccer
 social
 society
 sock
 sofa
 soft
+soft drink
 softly
 software
 soil
@@ -3742,7 +3863,9 @@ soup
 sour
 source
 south
+southeast/south-east
 southern
+south-west
 souvenir
 space
 spare
@@ -3829,6 +3952,8 @@ sting
 stir
 stitch
 stock
+stock exchange
+stock market
 stomach
 stone
 stool
@@ -3837,6 +3962,7 @@ storage
 store
 storm
 stormy
+story/storey
 stove
 straight
 straightforward
@@ -3909,7 +4035,7 @@ summary
 summer
 summit
 sun
-sunday
+Sunday
 sunlight
 sunny
 sunset
@@ -3960,6 +4086,7 @@ sweet
 swell
 swim
 swimming
+swimming pool
 swing
 switch
 swollen
@@ -3981,6 +4108,7 @@ tale
 talent
 talented
 talk
+talk show
 tall
 tan
 tank
@@ -3988,6 +4116,7 @@ tap
 tape
 target
 task
+task force
 taste
 tasty
 tax
@@ -4041,8 +4170,10 @@ texture
 than
 thank
 thanks
+thank you
 that
 the
+theater/theatre
 theft
 their
 theirs
@@ -4090,7 +4221,7 @@ throughout
 throw
 thumb
 thunder
-thursday
+Thursday
 thus
 tick
 ticket
@@ -4107,6 +4238,7 @@ timing
 tin
 tiny
 tip
+tire/tyre
 tired
 tissue
 title
@@ -4120,6 +4252,7 @@ tolerate
 tomato
 tomb
 tomorrow
+ton/tonne
 tone
 tongue
 tonight
@@ -4137,6 +4270,7 @@ tour
 tourism
 tourist
 tournament
+toward/towards
 towel
 tower
 town
@@ -4168,6 +4302,7 @@ transportation
 trap
 trash
 travel
+traveler/traveller
 treasure
 treasury
 treat
@@ -4198,15 +4333,16 @@ trunk
 trust
 truth
 try
+T-shirt
 tube
-tuesday
+Tuesday
 tune
 tunnel
 turkey
 turn
 turning
 tutor
-tv
+TV
 twelfth
 twelve
 twentieth
@@ -4301,13 +4437,16 @@ upon
 upper
 upright
 upset
+upside down
 upstairs
+upward/upwards
 urban
 urge
 urgent
 us
 use
 used
+used to
 useful
 useless
 user
@@ -4328,7 +4467,7 @@ various
 vary
 vase
 vast
-vat
+VAT
 vegetable
 vehicle
 venture
@@ -4345,6 +4484,7 @@ via
 victim
 victory
 video
+video game
 view
 viewer
 village
@@ -4395,6 +4535,7 @@ warn
 warning
 wash
 washing
+washing machine
 wasp
 waste
 watch
@@ -4411,11 +4552,14 @@ wealth
 weapon
 wear
 weather
+weather forecast
 weave
 web
-web
+Web
+web page
+website/Web site
 wedding
-wednesday
+Wednesday
 weed
 week
 weekend
@@ -4426,6 +4570,7 @@ weird
 welcome
 welfare
 well
+well known/well-known
 west
 western
 wet
@@ -4442,6 +4587,7 @@ wherever
 whether
 which
 whichever
+while/whilst
 whip
 whisper
 whistle
@@ -4519,6 +4665,7 @@ writing
 written
 wrong
 wrongly
+X-ray
 yacht
 yard
 yawn

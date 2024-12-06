@@ -1,5 +1,7 @@
 #include <riv.h>
 
+#include "dictionary.h"
+
 // game graphics constants 
 #define WS_TARGET_FPS 60
 #define WS_SCREEN_SIZE 128
@@ -8,7 +10,6 @@
 #define WS_TYPED_WORD_MARGIN 2
 
 // game logic constants
-#define WS_DICTIONARY_SIZE 16
 #define WS_MAX_WORD_COUNT 16
 #define WS_MAX_WORD_LENGTH 16
 #define WS_KEYBOARD_NROWS 3
@@ -31,25 +32,6 @@ const char keyboard[WS_KEYBOARD_NROWS][WS_KEYBOARD_NCOLS] = {
     {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
     {'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', '\0'},
     {'Z', 'X', 'C', 'V', 'B', 'N', 'M', '\0', '\0', '\0'},
-};
-
-const char dictionary[WS_DICTIONARY_SIZE][WS_MAX_WORD_LENGTH] = {
-    "lazy",
-    "brown",
-    "fox",
-    "jumped",
-    "quick",
-    "lorem",
-    "ipsum",
-    "alpha",
-    "beta",
-    "delta",
-    "pepper",
-    "paper",
-    "rock",
-    "scissors",
-    "disk",
-    "laptop",
 };
 
 // game logic variables
@@ -167,7 +149,7 @@ void try_to_spawn_word(const char* new_word)
 
 const char* pick_random_word_from_dictionary()
 {
-    return dictionary[riv_rand_uint(WS_DICTIONARY_SIZE - 1)];
+    return ws_dictionary[riv_rand_uint(ws_dictionary_length - 1)];
 }
 
 void handle_spawns()
