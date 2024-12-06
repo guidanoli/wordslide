@@ -64,12 +64,15 @@ void setup()
     riv->height = WS_SCREEN_SIZE;
     riv->target_fps = WS_TARGET_FPS;
 
+    riv->tracked_keys[RIV_KEYCODE_BACKSPACE] = true;
+
     for (riv_key_code keycode = RIV_KEYCODE_A; keycode <= RIV_KEYCODE_Z; ++keycode)
     {
         riv->tracked_keys[keycode] = true;
     }
 
-    riv->tracked_keys[RIV_KEYCODE_BACKSPACE] = true;
+    riv->tracked_keys[RIV_KEYCODE_LEFT_CTRL] = true;
+    riv->tracked_keys[RIV_KEYCODE_RIGHT_CTRL] = true;
 }
 
 bool is_key_triggered(riv_key_state keystate)
@@ -111,23 +114,56 @@ bool is_any_letter_key_pressed(char *ch)
     return false;
 }
 
+bool try_pushing_char_to_input_buffer(char ch)
+{
+    if (input_buffer_length < WS_INPUT_BUFFER_MAX_WORD_LENGTH)
+    {
+        input_buffer[input_buffer_length++] = ch;
+        input_buffer[input_buffer_length] = '\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool try_popping_char_from_input_buffer()
+{
+    if (input_buffer_length > 0)
+    {
+        input_buffer[--input_buffer_length] = '\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void clear_input_buffer()
+{
+    input_buffer_length = 0;
+    input_buffer[0] = '\0';
+}
+
 void handle_keypresses()
 {
     char ch;
 
     if (is_any_letter_key_pressed(&ch))
     {
-        if (input_buffer_length < WS_INPUT_BUFFER_MAX_WORD_LENGTH)
-        {
-            input_buffer[input_buffer_length++] = ch;
-            input_buffer[input_buffer_length] = '\0';
-        }
+        try_pushing_char_to_input_buffer(ch);
     }
     else if (is_key_triggered(riv->keys[RIV_KEYCODE_BACKSPACE]))
     {
-        if (input_buffer_length > 0)
+        if (riv->keys[RIV_KEYCODE_LEFT_CTRL].down || riv->keys[RIV_KEYCODE_RIGHT_CTRL].down)
         {
-            input_buffer[--input_buffer_length] = '\0';
+            clear_input_buffer();
+        }
+        else
+        {
+            try_popping_char_from_input_buffer();
         }
     }
 }
