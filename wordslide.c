@@ -39,6 +39,7 @@ struct word_object_t
     const char* word;             // the word itself. NULL if nonexistent.
     uint32_t creation_frame;      // frame in which the word was created
     uint32_t duration_in_frames;  // number of frames the word lives for
+    int64_t x;                    // x coordinate (random)
 };
 
 // game logic variables
@@ -183,13 +184,35 @@ void handle_keypresses()
     }
 }
 
+int64_t mystrlen(const char* s)
+{
+    int64_t n = 0;
+
+    while (*s != '\0')
+    {
+        ++n;
+        ++s;
+    }
+
+    return n;
+}
+
 void try_to_spawn_word(const char* new_word)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
         if (word_objects[i].word == NULL)
         {
-            word_objects[i] = (struct word_object_t){new_word, riv->frame, riv->target_fps * seconds_per_word};
+            int64_t len = mystrlen(new_word);
+            int64_t w = 5 * len;
+
+            word_objects[i] = (struct word_object_t){
+                    new_word,
+                    riv->frame,
+                    riv->target_fps * seconds_per_word,
+                    riv_rand_int(WS_MARGIN + w / 2 + 1, WS_SCREEN_SIZE - WS_MARGIN - w / 2 - 2),
+            };
+
             break;
         }
     }
@@ -369,7 +392,7 @@ void draw_sliding_words(int64_t input_buffer_min_y)
                     word_objects[i].word,
                     RIV_SPRITESHEET_FONT_5X7,
                     RIV_CENTER,
-                    WS_SCREEN_CENTER,
+                    word_objects[i].x,
                     y,
                     1,
                     RIV_COLOR_LIGHTGREY);
