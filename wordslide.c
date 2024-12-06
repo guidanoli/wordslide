@@ -194,6 +194,49 @@ void handle_spawns()
     }
 }
 
+bool streq(const char* a, const char* b)
+{
+    while (true)
+    {
+        if (*a == *b)
+        {
+            if (*a == '\0')
+            {
+                return true;
+            }
+            else
+            {
+                ++a;
+                ++b;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+void handle_matches()
+{
+    bool found_match = false;
+
+    for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
+    {
+        if (word_objects[i].word != NULL &&
+            streq(word_objects[i].word, input_buffer))
+        {
+            word_objects[i].word = NULL;
+            found_match = true;
+        }
+    }
+
+    if (found_match)
+    {
+        clear_input_buffer();
+    }
+}
+
 void handle_purges()
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
@@ -220,6 +263,7 @@ void update()
     {
         handle_keypresses();
         handle_spawns();
+        handle_matches();
         handle_purges();
     }
 }
