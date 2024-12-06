@@ -21,7 +21,7 @@
 #define WS_MAX_WORD_COUNT 16
 #define WS_MAX_HEARTS 2
 #define WS_GAMEOVER_DELAY 3
-#define WS_HEALING_WORD_PROBABILITY 0.1
+#define WS_HEALING_WORD_PROBABILITY 0.2
 
 enum sprite_id
 {
@@ -38,7 +38,7 @@ enum game_state_t
 struct word_object_t
 {
     const char* word;             // the word itself. NULL if nonexistent.
-    uint32_t creation_frame;      // frame in which the word was created
+    uint64_t creation_frame;      // frame in which the word was created
     uint32_t duration_in_frames;  // number of frames the word lives for
     int64_t x;                    // x coordinate (random)
     bool is_healing;              // whether the word gives an extra heart
@@ -313,7 +313,7 @@ void handle_purges()
 
         if (word != NULL)
         {
-            uint32_t creation_frame = word_obj->creation_frame;
+            uint64_t creation_frame = word_obj->creation_frame;
             uint32_t duration_in_frames = word_obj->duration_in_frames;
 
             if (riv->frame >= creation_frame + duration_in_frames)
@@ -421,17 +421,25 @@ void draw_sliding_words(int64_t input_buffer_min_y)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
-        if (word_objects[i].word != NULL)
+        struct word_object_t* word_obj = &word_objects[i];
+        const char* word = word_obj->word;
+
+        if (word != NULL)
         {
-            int64_t y = (input_buffer_min_y * (riv->frame - word_objects[i].creation_frame)) / (word_objects[i].duration_in_frames);
+            uint64_t creation_frame = word_obj->creation_frame;
+            uint32_t duration_in_frames = word_obj->duration_in_frames;
+            bool is_healing = word_obj->is_healing;
+
+            int64_t y = (input_buffer_min_y * (riv->frame - creation_frame)) / duration_in_frames;
+
             riv_draw_text(
-                    word_objects[i].word,
+                    word,
                     RIV_SPRITESHEET_FONT_5X7,
                     RIV_CENTER,
                     word_objects[i].x,
                     y,
                     1,
-                    RIV_COLOR_LIGHTGREY);
+                    is_healing ? RIV_COLOR_PINK : RIV_COLOR_LIGHTGREY);
         }
     }
 }
