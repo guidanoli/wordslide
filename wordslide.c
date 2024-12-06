@@ -19,8 +19,9 @@
 
 // game logic constants
 #define WS_MAX_WORD_COUNT 16
-#define WS_MAX_HEARTS 1
+#define WS_MAX_HEARTS 2
 #define WS_GAMEOVER_DELAY 3
+#define WS_HEALING_WORD_PROBABILITY 0.1
 
 enum sprite_id
 {
@@ -40,6 +41,7 @@ struct word_object_t
     uint32_t creation_frame;      // frame in which the word was created
     uint32_t duration_in_frames;  // number of frames the word lives for
     int64_t x;                    // x coordinate (random)
+    bool is_healing;              // whether the word gives an extra heart
 };
 
 // game logic variables
@@ -211,6 +213,7 @@ void try_to_spawn_word(const char* new_word)
                     riv->frame,
                     riv->target_fps * seconds_per_word,
                     riv_rand_int(WS_MARGIN + w / 2 + 1, WS_SCREEN_SIZE - WS_MARGIN - w / 2 - 2),
+                    (hearts < WS_MAX_HEARTS) ? (riv_rand_float() < WS_HEALING_WORD_PROBABILITY) : false,
             };
 
             break;
@@ -261,12 +264,20 @@ void handle_matches()
 
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
-        if (word_objects[i].word != NULL &&
-            streq(word_objects[i].word, input_buffer))
+        struct word_object_t* word_obj = &word_objects[i];
+        const char* word = word_obj->word;
+
+        if (word != NULL && streq(word, input_buffer))
         {
             found_match = true;
             correct_letters += input_buffer_length;
-            word_objects[i].word = NULL;
+
+            if (word_obj->is_healing && hearts < WS_MAX_HEARTS)
+            {
+                ++hearts;
+            }
+
+            word_obj->word = NULL;
         }
     }
 
