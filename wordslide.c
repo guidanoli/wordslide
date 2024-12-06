@@ -41,7 +41,8 @@ uint64_t next_frame_to_spawn_word = 0;
 uint64_t seconds_per_word = 3;
 uint64_t words_missed = 0;
 
-uint64_t uint64_min(uint64_t a, uint64_t b) {
+uint64_t uint64_min(uint64_t a, uint64_t b)
+{
     return (a < b) ? a : b;
 }
 

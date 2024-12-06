@@ -1,4 +1,5 @@
-BEGIN {
+BEGIN \
+{
     word_count = 0
     max_word_length = 0
 
@@ -7,7 +8,8 @@ BEGIN {
     print "const char* ws_dictionary[] = {"
 }
 
-/^[A-Za-z]*$/ {
+/^[A-Za-z]*$/ \
+{
     word_count++
 
     if (length > max_word_length)
@@ -18,7 +20,8 @@ BEGIN {
     printf "    \"%s\",\n", tolower($0)
 }
 
-END {
+END \
+{
     print "};"
     print ""
     printf "const int ws_dictionary_word_count = %d;\n", word_count
