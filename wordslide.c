@@ -39,7 +39,7 @@ uint8_t input_buffer_length = 0;
 struct word_object_t word_objects[WS_MAX_WORD_COUNT] = {{.word = NULL}};
 uint64_t next_frame_to_spawn_word = 0;
 uint64_t seconds_per_word = 3;
-uint64_t words_missed = 0;
+uint64_t correct_letters = 0;
 
 uint64_t uint64_min(uint64_t a, uint64_t b)
 {
@@ -226,8 +226,9 @@ void handle_matches()
         if (word_objects[i].word != NULL &&
             streq(word_objects[i].word, input_buffer))
         {
-            word_objects[i].word = NULL;
             found_match = true;
+            correct_letters += input_buffer_length;
+            word_objects[i].word = NULL;
         }
     }
 
@@ -245,7 +246,6 @@ void handle_purges()
             riv->frame >= word_objects[i].creation_frame + word_objects[i].duration_in_frames)
         {
             word_objects[i].word = NULL;
-            ++words_missed;
         }
     }
 }
