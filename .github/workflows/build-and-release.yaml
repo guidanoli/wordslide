@@ -35,7 +35,7 @@ jobs:
       - name: Verify RIVEMU and SDK installation
         run: |
           rivemu -version
-          rivemu -sdk -exec gcc --version
+          rivemu -quiet -no-window -sdk -exec gcc --version
 
       # Build the project
       - name: Build the project
