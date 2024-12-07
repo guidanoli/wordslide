@@ -68,11 +68,9 @@ void check()
 {
     if (ws_dictionary_max_word_length > WS_INPUT_BUFFER_MAX_WORD_LENGTH)
     {
-        riv_tprintf("The dictionary contains a word of length %d, which is longer than user input buffer length %d.\n"
-                    "Either remove such word from the dictionary or raise the buffer length accordingly.\n",
-                    ws_dictionary_max_word_length, WS_INPUT_BUFFER_MAX_WORD_LENGTH);
-
-        riv_panic((const char*)riv->temp_str_buf);
+        riv_panic(riv_tprintf("The dictionary contains a word of length %d, which is longer than user input buffer length %d.\n"
+                              "Either remove such word from the dictionary or raise the buffer length accordingly.\n",
+                              ws_dictionary_max_word_length, WS_INPUT_BUFFER_MAX_WORD_LENGTH));
     }
 }
 
@@ -471,10 +469,8 @@ void draw_heart()
             WS_MARGIN,
             1, 1, 1, 1);
 
-    riv_tprintf("%d", hearts);
-
     riv_draw_text(
-            (const char*)riv->temp_str_buf,
+            riv_tprintf("%d", hearts),
             RIV_SPRITESHEET_FONT_3X5,
             RIV_CENTER,
             WS_SCREEN_SIZE - WS_SPRITE_SIZE / 2 - WS_MARGIN,
