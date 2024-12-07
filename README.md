@@ -1,3 +1,5 @@
+![Screenshot of a gameplay of "Wordslide"](screenshot.png)
+
 # Wordslide
 
 A fun game to test your typing skills!
