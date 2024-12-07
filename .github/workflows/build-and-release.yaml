@@ -1,0 +1,59 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install RIVEMU
+      - name: Install RIVEMU
+        run: |
+          wget -O rivemu https://github.com/rives-io/riv/releases/latest/download/rivemu-linux-amd64
+          chmod +x rivemu
+          mkdir -p $HOME/.riv
+          mv rivemu $HOME/.riv/
+          echo 'export PATH=$HOME/.riv:$PATH' >> $GITHUB_ENV
+
+      # Install RIV SDK
+      - name: Install RIV SDK
+        run: |
+          wget -O rivos-sdk.ext2 https://github.com/rives-io/riv/releases/latest/download/rivos-sdk.ext2
+          mkdir -p $HOME/.riv
+          mv rivos-sdk.ext2 $HOME/.riv/
+          echo 'export RIVEMU_SDK=$HOME/.riv/rivos-sdk.ext2' >> $GITHUB_ENV
+
+      # Verify installations
+      - name: Verify RIVEMU and SDK installation
+        run: |
+          rivemu -version
+          rivemu -sdk -exec gcc --version
+
+      # Build the project
+      - name: Build the project
+        run: make build
+
+      # Prepare the release asset
+      - name: Prepare release asset
+        run: |
+          if [ ! -f wordslide.sqfs ]; then
+            echo "wordslide.sqfs not found after build."
+            exit 1
+          fi
+
+      # Upload to GitHub Release
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./wordslide.sqfs
+          asset_name: wordslide.sqfs
+          asset_content_type: application/octet-stream
