@@ -1,4 +1,5 @@
 #include <riv.h>
+#include <math.h>
 
 #include "dictionary.h"
 
@@ -19,7 +20,7 @@
 
 // game logic constants
 #define WS_MAX_WORD_COUNT 16
-#define WS_MAX_HEARTS 2
+#define WS_MAX_HEARTS 10
 #define WS_GAMEOVER_DELAY 3
 #define WS_HEALING_WORD_PROBABILITY 0.2
 
@@ -39,7 +40,7 @@ struct word_object_t
 {
     const char* word;             // the word itself. NULL if nonexistent.
     uint64_t creation_frame;      // frame in which the word was created
-    uint32_t duration_in_frames;  // number of frames the word lives for
+    uint32_t lifespan_in_frames;  // number of frames the word lives for
     int64_t x;                    // x coordinate (random)
     bool is_healing;              // whether the word gives an extra heart
 };
@@ -50,10 +51,10 @@ char input_buffer[WS_INPUT_BUFFER_MAX_WORD_LENGTH + 1] = {'\0'};
 uint8_t input_buffer_length = 0;
 struct word_object_t word_objects[WS_MAX_WORD_COUNT] = {{.word = NULL}};
 uint64_t next_frame_to_spawn_word = 0;
-uint64_t seconds_per_word = 3;
 uint64_t correct_letters = 0;
 uint64_t hearts = WS_MAX_HEARTS;
 uint64_t healing_words = 0;
+uint64_t start_frame = 0;
 
 // game graphics variables
 int sprites_id;
@@ -200,6 +201,24 @@ int64_t mystrlen(const char* s)
     return n;
 }
 
+double calculate_word_lifespan()
+{
+    double a = 4.0;
+    double b = 2.0;
+    double c = 30.0 * riv->target_fps;
+    double t = riv->frame - start_frame;
+    return a + b * exp(-t/c);
+}
+
+double calculate_word_spawn_period()
+{
+    double a = 1.0;
+    double b = 1.0;
+    double c = 30.0 * riv->target_fps;
+    double t = riv->frame - start_frame;
+    return a + b * exp(-t/c);
+}
+
 void try_to_spawn_word(const char* new_word)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
@@ -213,7 +232,7 @@ void try_to_spawn_word(const char* new_word)
             word_objects[i] = (struct word_object_t){
                     new_word,
                     riv->frame,
-                    riv->target_fps * seconds_per_word,
+                    riv->target_fps * calculate_word_lifespan(),
                     riv_rand_int(WS_MARGIN + w / 2 + 1, WS_SCREEN_SIZE - WS_MARGIN - w / 2 - 2),
                     is_healing,
             };
@@ -238,7 +257,7 @@ void handle_spawns()
     if (riv->frame >= next_frame_to_spawn_word)
     {
         try_to_spawn_word(pick_random_word_from_dictionary());
-        next_frame_to_spawn_word = riv->frame + riv_rand_int(2 * riv->target_fps, 4 * riv->target_fps);
+        next_frame_to_spawn_word = riv->frame + riv->target_fps * calculate_word_spawn_period();
     }
 }
 
@@ -314,9 +333,9 @@ void handle_purges()
         if (word != NULL)
         {
             uint64_t creation_frame = word_obj->creation_frame;
-            uint32_t duration_in_frames = word_obj->duration_in_frames;
+            uint32_t lifespan_in_frames = word_obj->lifespan_in_frames;
 
-            if (riv->frame >= creation_frame + duration_in_frames)
+            if (riv->frame >= creation_frame + lifespan_in_frames)
             {
                 if (hearts > 0)
                 {
@@ -350,6 +369,7 @@ void update()
         if (riv->key_toggle_count > 0)
         {
             game_state = WS_GAMESTATE_ONGOING;
+            start_frame = riv->frame + 1;
         }
     }
     else if (game_state == WS_GAMESTATE_ONGOING)
@@ -364,8 +384,6 @@ void update()
 
 void draw_title_screen()
 {
-    riv_clear(RIV_COLOR_DARKSLATE);
-
     int title_font_height = 7;
     int title_size_multipler = 2;
     int title_target_y = WS_SCREEN_CENTER - title_font_height * title_size_multipler / 2;
@@ -402,7 +420,7 @@ int64_t draw_input_buffer()
             1,
             RIV_COLOR_LIGHTBLUE);
 
-    if ((riv->frame / riv->target_fps) % 2 == 0)
+    if (((riv->frame - start_frame) / riv->target_fps) % 2 == 0)
     {
         riv_draw_text(
                 "_",
@@ -427,10 +445,10 @@ void draw_sliding_words(int64_t input_buffer_min_y)
         if (word != NULL)
         {
             uint64_t creation_frame = word_obj->creation_frame;
-            uint32_t duration_in_frames = word_obj->duration_in_frames;
+            uint32_t lifespan_in_frames = word_obj->lifespan_in_frames;
             bool is_healing = word_obj->is_healing;
 
-            int64_t y = (input_buffer_min_y * (riv->frame - creation_frame)) / duration_in_frames;
+            int64_t y = (input_buffer_min_y * (riv->frame - creation_frame)) / lifespan_in_frames;
 
             riv_draw_text(
                     word,
@@ -479,21 +497,21 @@ void draw_game_over()
 
 void draw()
 {
+    riv_clear(RIV_COLOR_DARKSLATE);
+
     if (game_state == WS_GAMESTATE_TITLESCREEN)
     {
         draw_title_screen();
     }
-    else if (game_state == WS_GAMESTATE_ONGOING || game_state == WS_GAMESTATE_END)
+    else if (game_state == WS_GAMESTATE_ONGOING)
     {
-        riv_clear(RIV_COLOR_DARKSLATE);
         int64_t sliding_words_max_y = draw_input_buffer();
         draw_sliding_words(sliding_words_max_y);
         draw_heart();
-
-        if (game_state == WS_GAMESTATE_END)
-        {
-            draw_game_over();
-        }
+    }
+    else if (game_state == WS_GAMESTATE_END)
+    {
+        draw_game_over();
     }
 }
 
