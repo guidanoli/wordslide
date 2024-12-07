@@ -23,7 +23,7 @@ $(NAME).elf: $(SOURCE_FILES) $(HEADER_FILES)
 	$(RIVEMU_EXEC) riv-strip $@
 
 dictionary.c: dictionary.awk dictionary.txt
-	awk -f $^ > $@
+	$(RIVEMU_EXEC) awk -f $^ > $@
 
 .PHONY: oxipng
 oxipng: $(IMAGE_FILES)
@@ -43,4 +43,4 @@ run-jit: $(SOURCE_FILES)
 
 .PHONY: clean
 clean:
-	rm -f *.sqfs *.elf dictionary.c
+	$(RIVEMU_EXEC) rm -f *.sqfs *.elf dictionary.c
