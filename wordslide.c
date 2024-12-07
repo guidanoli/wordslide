@@ -51,7 +51,7 @@ char input_buffer[WS_INPUT_BUFFER_MAX_WORD_LENGTH + 1] = {'\0'};
 uint8_t input_buffer_length = 0;
 struct word_object_t word_objects[WS_MAX_WORD_COUNT] = {{.word = NULL}};
 uint64_t next_frame_to_spawn_word = 0;
-uint64_t correct_letters = 0;
+uint64_t score = 0;
 uint64_t hearts = WS_MAX_HEARTS;
 uint64_t healing_words = 0;
 uint64_t start_frame = 0;
@@ -217,6 +217,18 @@ double calculate_word_spawn_period()
     return a + b * exp(-t/c);
 }
 
+uint64_t text_width(uint64_t font_width, uint64_t text_length)
+{
+    if (text_length == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return (font_width + 1) * text_length - 1;
+    }
+}
+
 void try_to_spawn_word(const char* new_word)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
@@ -224,14 +236,13 @@ void try_to_spawn_word(const char* new_word)
         if (word_objects[i].word == NULL)
         {
             int64_t len = mystrlen(new_word);
-            int64_t w = 5 * len;
             bool is_healing = ((hearts + healing_words) < WS_MAX_HEARTS) && (riv_rand_float() < WS_HEALING_WORD_PROBABILITY);
 
             word_objects[i] = (struct word_object_t){
                     new_word,
                     riv->frame,
                     riv->target_fps * calculate_word_lifespan(),
-                    riv_rand_int(WS_MARGIN + w / 2 + 1, WS_SCREEN_SIZE - WS_MARGIN - w / 2 - 2),
+                    riv_rand_int(WS_MARGIN, WS_SCREEN_SIZE - WS_MARGIN - text_width(5, len)),
                     is_healing,
             };
 
@@ -304,7 +315,7 @@ void handle_matches()
         if (word != NULL && streq(word, input_buffer))
         {
             found_match = true;
-            correct_letters += input_buffer_length;
+            score += input_buffer_length;
 
             if (word_obj->is_healing && hearts < WS_MAX_HEARTS)
             {
@@ -350,6 +361,11 @@ void end_game()
 {
     game_state = WS_GAMESTATE_END;
     riv->stop_frame = riv->frame + WS_GAMEOVER_DELAY * riv->target_fps;
+    riv->outcard_len = riv_snprintf(
+            (char*)riv->outcard,
+            RIV_SIZE_OUTCARD,
+            "JSON{\"score\": \"%lu\"}",
+            score);
 }
 
 void check_hearts()
@@ -407,6 +423,20 @@ void draw_title_screen()
             ((3 * riv->frame / riv->target_fps) % 4 != 3) ? RIV_COLOR_RED : RIV_COLOR_PINK); // fast blink
 }
 
+int64_t draw_score()
+{
+    riv_recti rect = riv_draw_text(
+            riv_tprintf("%lu", score),
+            RIV_SPRITESHEET_FONT_5X7,
+            RIV_TOPLEFT,
+            WS_MARGIN,
+            WS_MARGIN,
+            1,
+            RIV_COLOR_ORANGE);
+
+    return rect.y + rect.height + WS_MARGIN;
+}
+
 int64_t draw_input_buffer()
 {
     riv_recti rect = riv_draw_text(
@@ -433,7 +463,7 @@ int64_t draw_input_buffer()
     return WS_SCREEN_SIZE - WS_MARGIN - 7 - WS_MARGIN;
 }
 
-void draw_sliding_words(int64_t input_buffer_min_y)
+void draw_sliding_words(int64_t min_y, int64_t max_y)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
     {
@@ -446,12 +476,12 @@ void draw_sliding_words(int64_t input_buffer_min_y)
             uint32_t lifespan_in_frames = word_obj->lifespan_in_frames;
             bool is_healing = word_obj->is_healing;
 
-            int64_t y = (input_buffer_min_y * (riv->frame - creation_frame)) / lifespan_in_frames;
+            int64_t y = min_y + ((max_y - min_y - 7) * (riv->frame - creation_frame)) / lifespan_in_frames;
 
             riv_draw_text(
                     word,
                     RIV_SPRITESHEET_FONT_5X7,
-                    RIV_CENTER,
+                    RIV_TOPLEFT,
                     word_objects[i].x,
                     y,
                     1,
@@ -501,12 +531,14 @@ void draw()
     }
     else if (game_state == WS_GAMESTATE_ONGOING)
     {
+        int64_t sliding_words_min_y = draw_score();
         int64_t sliding_words_max_y = draw_input_buffer();
-        draw_sliding_words(sliding_words_max_y);
+        draw_sliding_words(sliding_words_min_y, sliding_words_max_y);
         draw_heart();
     }
     else if (game_state == WS_GAMESTATE_END)
     {
+        draw_score();
         draw_game_over();
     }
 }
