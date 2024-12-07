@@ -2,8 +2,10 @@ NAME= wordslide
 RIVEMU= rivemu
 RIVEMU_IFLAGS= -quiet -sdk -workspace
 RIVEMU_FLAGS= $(RIVEMU_IFLAGS) -no-window
-RIVEMU_IEXEC= $(RIVEMU) $(RIVEMU_IFLAGS) -exec
+RIVEMU_RUNFLAGS= -print-outcard
+RIVEMU_IEXEC= $(RIVEMU) $(RIVEMU_IFLAGS) $(RIVEMU_RUNFLAGS) -exec
 RIVEMU_EXEC= $(RIVEMU) $(RIVEMU_FLAGS) -exec
+RIVEMU_RUN= $(RIVEMU) $(RIVEMU_RUNFLAGS)
 CFLAGS= $(shell $(RIVEMU_EXEC) riv-opt-flags -Ospeed)
 SOURCE_FILES= wordslide.c dictionary.c
 HEADER_FILES= dictionary.h
@@ -29,11 +31,11 @@ oxipng: $(IMAGE_FILES)
 
 .PHONY: run
 run: $(NAME).sqfs
-	$(RIVEMU) $<
+	$(RIVEMU_RUN) $<
 
 .PHONY: bench
 bench: $(NAME).sqfs
-	$(RIVEMU) -bench $<
+	$(RIVEMU_RUN) -bench $<
 
 .PHONY: run-jit
 run-jit: $(SOURCE_FILES)
