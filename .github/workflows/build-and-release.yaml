@@ -21,7 +21,7 @@ jobs:
           chmod +x rivemu
           mkdir -p $HOME/.riv
           mv rivemu $HOME/.riv/
-          echo 'export PATH=$HOME/.riv:$PATH' >> $GITHUB_ENV
+          echo "$HOME/.riv" >> $GITHUB_PATH
 
       # Install RIV SDK
       - name: Install RIV SDK
@@ -29,7 +29,7 @@ jobs:
           wget -O rivos-sdk.ext2 https://github.com/rives-io/riv/releases/latest/download/rivos-sdk.ext2
           mkdir -p $HOME/.riv
           mv rivos-sdk.ext2 $HOME/.riv/
-          echo 'export RIVEMU_SDK=$HOME/.riv/rivos-sdk.ext2' >> $GITHUB_ENV
+          echo "RIVEMU_SDK=$HOME/.riv/rivos-sdk.ext2" >> $GITHUB_ENV
 
       # Verify installations
       - name: Verify RIVEMU and SDK installation
