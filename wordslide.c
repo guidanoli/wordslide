@@ -10,7 +10,7 @@
 #define WS_TARGET_FPS 60
 #define WS_SCREEN_SIZE 128
 #define WS_SCREEN_CENTER (WS_SCREEN_SIZE / 2)
-#define WS_SPRITE_SIZE 16
+#define WS_SPRITE_SIZE 8
 #define WS_MARGIN 4
 
 // game input constants
@@ -31,6 +31,7 @@
 enum sprite_id
 {
     WS_SPRITE_HEART = 0,
+    WS_SPRITE_DOLLAR = 1,
 };
 
 enum game_state_t
@@ -446,14 +447,21 @@ void draw_title_screen()
 
 int64_t draw_score()
 {
+    riv_draw_sprite(
+            WS_SPRITE_DOLLAR,
+            sprites_id,
+            WS_MARGIN,
+            WS_MARGIN,
+            1, 1, 1, 1);
+
     riv_recti rect = riv_draw_text(
             riv_tprintf("%lu", score),
-            RIV_SPRITESHEET_FONT_5X7,
-            RIV_TOPLEFT,
-            WS_MARGIN,
-            WS_MARGIN,
+            RIV_SPRITESHEET_FONT_3X5,
+            RIV_LEFT,
+            WS_SPRITE_SIZE + 2 * WS_MARGIN,
+            WS_MARGIN + WS_SPRITE_SIZE / 2,
             1,
-            RIV_COLOR_ORANGE);
+            RIV_COLOR_GREEN);
 
     return rect.y + rect.height + WS_MARGIN;
 }
@@ -523,11 +531,11 @@ void draw_heart()
     riv_draw_text(
             riv_tprintf("%d", hearts),
             RIV_SPRITESHEET_FONT_3X5,
-            RIV_CENTER,
-            WS_SCREEN_SIZE - WS_SPRITE_SIZE / 2 - WS_MARGIN,
+            RIV_RIGHT,
+            WS_SCREEN_SIZE - WS_SPRITE_SIZE - 2 * WS_MARGIN,
             WS_MARGIN + WS_SPRITE_SIZE / 2,
             1,
-            RIV_COLOR_DARKRED);
+            RIV_COLOR_RED);
 }
 
 void draw_game_over()
