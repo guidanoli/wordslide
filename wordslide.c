@@ -580,7 +580,11 @@ int main()
     do
     {
         update();
-        draw();
+
+        if (riv->yielding)
+        {
+            draw();
+        }
     }
     while (riv_present());
 
