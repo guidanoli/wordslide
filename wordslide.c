@@ -22,7 +22,11 @@
 #define WS_MAX_WORD_COUNT 16
 #define WS_MAX_HEARTS 10
 #define WS_GAMEOVER_DELAY 3
-#define WS_HEALING_WORD_PROBABILITY 0.2
+#define WS_HEALING_PROBABILITY_MIN 0.2
+#define WS_HEALING_PROBABILITY_MAX 0.8
+
+// math constants
+#define LN_2 0.69314718055995
 
 enum sprite_id
 {
@@ -229,6 +233,23 @@ uint64_t text_width(uint64_t font_width, uint64_t text_length)
     }
 }
 
+double calculate_healing_probability()
+{
+    if (hearts + healing_words >= WS_MAX_HEARTS)
+    {
+        return 0.0;
+    }
+    else
+    {
+        double a = WS_HEALING_PROBABILITY_MIN;
+        double b = WS_HEALING_PROBABILITY_MAX - WS_HEALING_PROBABILITY_MIN;
+        int32_t min_hearts = 1;
+        int32_t max_hearts = WS_MAX_HEARTS;
+        double c = ((double)(max_hearts - min_hearts)) / (2.0 * LN_2);
+        return a + b * exp(- ((double)(hearts - min_hearts)) / c);
+    }
+}
+
 void try_to_spawn_word(const char* new_word)
 {
     for (int i = 0; i < WS_MAX_WORD_COUNT; ++i)
@@ -236,7 +257,7 @@ void try_to_spawn_word(const char* new_word)
         if (word_objects[i].word == NULL)
         {
             int64_t len = mystrlen(new_word);
-            bool is_healing = ((hearts + healing_words) < WS_MAX_HEARTS) && (riv_rand_float() < WS_HEALING_WORD_PROBABILITY);
+            bool is_healing = riv_rand_float() < calculate_healing_probability();
 
             word_objects[i] = (struct word_object_t){
                     new_word,
