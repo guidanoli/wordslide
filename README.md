@@ -21,7 +21,7 @@ Your score is the number of correctly typed letters.
 
 ## Downloading the cartridge
 
-You can download the latest version of the cartrige from GitHub Releases.
+You can download the latest version of the cartrige from GitHub Releases [here](https://github.com/guidanoli/wordslide/releases/latest/download/wordslide.sqfs).
 
 ## Building the cartridge from source
 
