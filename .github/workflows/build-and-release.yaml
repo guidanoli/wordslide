@@ -41,41 +41,8 @@ jobs:
       - name: Build the project
         run: make build
 
-      # Prepare the release asset
-      - name: Prepare release asset
-        run: |
-          if [ ! -f wordslide.sqfs ]; then
-            echo "wordslide.sqfs not found after build."
-            exit 1
-          fi
-
-      # Determine if prerelease
-      - name: Determine prerelease status
-        id: determine_prerelease
-        run: |
-          if [[ "${GITHUB_REF_NAME}" =~ alpha|beta|rc ]]; then
-            echo "PRERELEASE=true" >> $GITHUB_ENV
-          else
-            echo "PRERELEASE=false" >> $GITHUB_ENV
-          fi
-
-      # Create or update the GitHub Release
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      # Upload to GitHub Releases
+      - name: Upload Artifact to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
-          draft: false
-          prerelease: ${{ env.PRERELEASE }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload to GitHub Release
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./wordslide.sqfs
-          asset_name: wordslide.sqfs
-          asset_content_type: application/octet-stream
+          files: wordslide.sqfs
