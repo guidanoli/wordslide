@@ -57,6 +57,7 @@ jobs:
             echo "PRERELEASE=true" >> $GITHUB_ENV
           else
             echo "PRERELEASE=false" >> $GITHUB_ENV
+          fi
 
       # Create or update the GitHub Release
       - name: Create GitHub Release
