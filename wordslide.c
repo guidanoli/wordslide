@@ -201,8 +201,8 @@ int64_t mystrlen(const char* s)
 
 double calculate_word_lifespan()
 {
-    double a = 4.0;
-    double b = 2.0;
+    double a = 4.0; // minimum lifespan
+    double b = 2.0; // extra initial lifespan
     double c = 30.0 * riv->target_fps;
     double t = riv->frame - start_frame;
     return a + b * exp(-t/c);
@@ -210,8 +210,8 @@ double calculate_word_lifespan()
 
 double calculate_word_spawn_period()
 {
-    double a = 1.0;
-    double b = 1.0;
+    double a = 1.0; // minimum period
+    double b = 1.0; // extra initial period
     double c = 30.0 * riv->target_fps;
     double t = riv->frame - start_frame;
     return a + b * exp(-t/c);
